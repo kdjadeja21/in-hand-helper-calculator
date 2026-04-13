@@ -1,5 +1,6 @@
 {
-  "name": "on-hand-calculator",
+  "name": "in-hand-helper-calculator",
+  "description": "In-Hand Helper Calculator for salary planning and take-home pay projections.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
