@@ -103,6 +103,8 @@ export default function Home() {
     salaryPeriod === "yearly" ? annualCTCNumber : annualCTCNumber * 12;
   const normalizedGrossMonthly =
     salaryPeriod === "yearly" ? grossSalaryNumber / 12 : grossSalaryNumber;
+  const basicMonthly = salaryPeriod === "yearly" ? basicValueNumber / 12 : basicValueNumber;
+  const hraMonthly = salaryPeriod === "yearly" ? hraValueNumber / 12 : hraValueNumber;
   const otherDeductionsMonthly =
     salaryPeriod === "yearly" ? otherDeductionsNumber / 12 : otherDeductionsNumber;
 
@@ -112,8 +114,8 @@ export default function Home() {
     setSubmittedInputs({
       normalizedAnnualCTC: Math.max(0, normalizedAnnualCTC),
       normalizedGrossMonthly: Math.max(0, normalizedGrossMonthly),
-      basicValue: Math.max(0, basicValueNumber),
-      hraValue: Math.max(0, hraValueNumber),
+      basicValue: Math.max(0, basicMonthly),
+      hraValue: Math.max(0, hraMonthly),
       otherDeductionsMonthly: Math.max(0, otherDeductionsMonthly),
       taxRegime,
     });
@@ -130,6 +132,8 @@ export default function Home() {
     setSalaryPeriod(nextPeriod);
     setAnnualCTC(String(Math.round(Math.max(0, annualCTCNumber * factor))));
     setGrossSalary(String(Math.round(Math.max(0, grossSalaryNumber * factor))));
+    setBasicValue(String(Math.round(Math.max(0, basicValueNumber * factor))));
+    setHraValue(String(Math.round(Math.max(0, hraValueNumber * factor))));
     setOtherDeductions(
       otherDeductions ? String(Math.round(Math.max(0, otherDeductionsNumber * factor))) : ""
     );
@@ -154,7 +158,7 @@ export default function Home() {
       errors.push("Other deductions cannot be negative.");
     }
 
-    if (basicValueNumber + hraValueNumber > normalizedGrossMonthly) {
+    if (basicMonthly + hraMonthly > normalizedGrossMonthly) {
       errors.push("Basic + HRA is greater than gross monthly salary.");
     }
 
@@ -162,8 +166,8 @@ export default function Home() {
   }, [
     normalizedAnnualCTC,
     normalizedGrossMonthly,
-    basicValueNumber,
-    hraValueNumber,
+    basicMonthly,
+    hraMonthly,
     otherDeductionsNumber,
   ]);
 
@@ -657,6 +661,26 @@ export default function Home() {
             ))}
           </CardContent>
         </Card>
+
+        <footer className="rounded-3xl border border-zinc-200/70 bg-white/85 px-5 py-4 text-sm shadow-[0_18px_40px_-34px_rgba(30,41,59,0.7)] backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/75">
+          <p className="text-xs font-semibold tracking-[0.12em] text-zinc-500 uppercase dark:text-zinc-400">
+            Privacy Commitment
+          </p>
+          <p className="mt-1 font-semibold text-zinc-900 dark:text-zinc-100">
+            We do not store, retain, or share any salary information entered in this calculator.
+          </p>
+          <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+            This tool is designed with a privacy-first approach for sensitive salary planning use cases.
+          </p>
+          <a
+            href="https://github.com/kdjadeja21/in-hand-helper-calculator"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-flex text-sm font-medium text-blue-600 underline-offset-4 hover:underline dark:text-blue-400"
+          >
+            View source code on GitHub
+          </a>
+        </footer>
       </div>
     </main>
   );
