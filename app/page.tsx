@@ -7,6 +7,7 @@ import { PageHeader } from "@/features/salary-planner/components/PageHeader";
 import { PrivacyFooter } from "@/features/salary-planner/components/PrivacyFooter";
 import { SalaryComparisonCard } from "@/features/salary-planner/components/SalaryComparisonCard";
 import { SalaryInputCard } from "@/features/salary-planner/components/SalaryInputCard";
+import { TaxExemptDeductionComparisonCard } from "@/features/salary-planner/components/TaxExemptDeductionComparisonCard";
 import { TaxRegimeComparisonCard } from "@/features/salary-planner/components/TaxRegimeComparisonCard";
 import { useSalaryPlanner } from "@/features/salary-planner/hooks/useSalaryPlanner";
 
@@ -55,6 +56,13 @@ export default function Home() {
               isNewRegimeBetter={computedData.isNewRegimeBetter}
             />
           </div>
+          {computedData.hasTaxExemptDeduction ? (
+            <TaxExemptDeductionComparisonCard
+              withoutDeductionResult={computedData.projectedWithoutTaxExemptResult}
+              withDeductionResult={computedData.projectedWithTaxExemptResult}
+              savingsMonthly={computedData.taxExemptSavingsMonthly}
+            />
+          ) : null}
         </section>
         <SalaryComparisonCard
           result={computedData.result}

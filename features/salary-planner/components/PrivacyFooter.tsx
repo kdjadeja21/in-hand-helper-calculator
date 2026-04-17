@@ -19,6 +19,18 @@ export function PrivacyFooter() {
       >
         View source code on GitHub
       </a>
+      <div className="mt-3 border-t border-zinc-200/80 dark:border-zinc-800" />
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Planning your long-term investments too? Use our SIP calculator for quick projections.
+      </p>
+      <a
+        href="https://sip-calc.vercel.app/"
+        target="_blank"
+        rel="noreferrer"
+        className="mt-1 inline-flex text-sm font-medium text-blue-600 underline-offset-4 hover:underline dark:text-blue-400"
+      >
+        Try SIP calculator
+      </a>
     </footer>
   );
 }

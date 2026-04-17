@@ -144,6 +144,13 @@ export function SalaryInputCard({
                   onChange={(value) => onFieldChange("otherDeductions", value)}
                 />
               </div>
+              <div className="sm:col-span-2 xl:col-span-1">
+                <MoneyInput
+                  label={`Tax Exempt Deduction (Optional, ${salaryPeriod === "yearly" ? "Yearly" : "Monthly"} ₹)`}
+                  value={formValues.taxExemptDeduction}
+                  onChange={(value) => onFieldChange("taxExemptDeduction", value)}
+                />
+              </div>
             </div>
           </div>
         </CardContent>

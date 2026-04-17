@@ -8,6 +8,7 @@ export interface SalaryFormValues {
   basicValue: string;
   hraValue: string;
   otherDeductions: string;
+  taxExemptDeduction: string;
 }
 
 export interface SubmittedInputs {
@@ -16,6 +17,7 @@ export interface SubmittedInputs {
   basicValue: number;
   hraValue: number;
   otherDeductionsMonthly: number;
+  taxExemptDeductionMonthly: number;
   taxRegime: TaxRegime;
 }
 
@@ -30,8 +32,12 @@ export interface SalaryPlannerComputedData {
   projectedResult: SalaryCalculatorResult;
   projectedOldRegimeResult: SalaryCalculatorResult;
   projectedNewRegimeResult: SalaryCalculatorResult;
+  projectedWithoutTaxExemptResult: SalaryCalculatorResult;
+  projectedWithTaxExemptResult: SalaryCalculatorResult;
+  hasTaxExemptDeduction: boolean;
   netDifference: number;
   inHandDifference: number;
+  taxExemptSavingsMonthly: number;
   isNewRegimeBetter: boolean;
   isOldRegimeBetter: boolean;
   earningsRows: ComparisonRow[];

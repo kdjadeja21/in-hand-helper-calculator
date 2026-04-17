@@ -6,6 +6,7 @@ export interface SalaryCalculatorInput {
   basicAmount: number;
   hraAmount: number;
   otherDeductionsMonthly: number;
+  taxExemptDeductionMonthly?: number;
   taxRegime: TaxRegime;
 }
 
@@ -80,6 +81,7 @@ export function calculateSalaryBreakdown(
   const basic = Math.max(0, input.basicAmount);
   const hra = Math.max(0, input.hraAmount);
   const otherDeductions = Math.max(0, input.otherDeductionsMonthly);
+  const taxExemptDeductionMonthly = Math.max(0, input.taxExemptDeductionMonthly ?? 0);
 
   const specialAllowance = Math.max(0, grossMonthlySalary - (basic + hra));
   const pf = basic * 0.12;
@@ -87,10 +89,17 @@ export function calculateSalaryBreakdown(
 
   const annualGross = grossMonthlySalary * 12;
   const annualPF = pf * 12;
+  const annualTaxExemptDeduction = taxExemptDeductionMonthly * 12;
   const taxableIncome =
     input.taxRegime === "old"
-      ? Math.max(0, annualGross - OLD_STANDARD_DEDUCTION - Math.min(annualPF, 150000))
-      : Math.max(0, annualGross - NEW_STANDARD_DEDUCTION);
+      ? Math.max(
+          0,
+          annualGross -
+            OLD_STANDARD_DEDUCTION -
+            annualTaxExemptDeduction -
+            Math.min(annualPF, 150000)
+        )
+      : Math.max(0, annualGross - NEW_STANDARD_DEDUCTION - annualTaxExemptDeduction);
   const annualIncomeTax =
     input.taxRegime === "old"
       ? calculateOldRegimeTax(taxableIncome)

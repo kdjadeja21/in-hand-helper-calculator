@@ -20,6 +20,7 @@ const initialFormValues: SalaryFormValues = {
   basicValue: "40000",
   hraValue: "20000",
   otherDeductions: "",
+  taxExemptDeduction: "",
 };
 
 const initialSubmittedInputs: SubmittedInputs = {
@@ -28,6 +29,7 @@ const initialSubmittedInputs: SubmittedInputs = {
   basicValue: 40000,
   hraValue: 20000,
   otherDeductionsMonthly: 0,
+  taxExemptDeductionMonthly: 0,
   taxRegime: "new",
 };
 
@@ -48,6 +50,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
   const basicValueNumber = parseAmount(formValues.basicValue);
   const hraValueNumber = parseAmount(formValues.hraValue);
   const otherDeductionsNumber = parseAmount(formValues.otherDeductions);
+  const taxExemptDeductionNumber = parseAmount(formValues.taxExemptDeduction);
 
   const normalizedAnnualCTC =
     salaryPeriod === "yearly" ? annualCTCNumber : annualCTCNumber * 12;
@@ -66,6 +69,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
     if (basicValueNumber < 0) errors.push("Basic salary cannot be negative.");
     if (hraValueNumber < 0) errors.push("HRA cannot be negative.");
     if (otherDeductionsNumber < 0) errors.push("Other deductions cannot be negative.");
+    if (taxExemptDeductionNumber < 0) errors.push("Tax exempt deduction cannot be negative.");
     if (basicMonthly + hraMonthly > normalizedGrossMonthly) {
       errors.push("Basic + HRA is greater than gross monthly salary.");
     }
@@ -79,6 +83,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
     normalizedAnnualCTC,
     normalizedGrossMonthly,
     otherDeductionsNumber,
+    taxExemptDeductionNumber,
   ]);
 
   const result = useMemo(
@@ -89,6 +94,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         basicAmount: submittedInputs.basicValue,
         hraAmount: submittedInputs.hraValue,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
         taxRegime: submittedInputs.taxRegime,
       }),
     [salaryBreakdownService, submittedInputs]
@@ -105,6 +111,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       basicAmount: enforcedBasic,
       hraAmount: projectedHra,
       otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+      taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
       taxRegime: submittedInputs.taxRegime,
     });
   }, [result, salaryBreakdownService, submittedInputs]);
@@ -117,6 +124,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         basicAmount: projectedResult.basic,
         hraAmount: projectedResult.hra,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
         taxRegime: "old",
       }),
     [projectedResult, salaryBreakdownService, submittedInputs]
@@ -130,7 +138,36 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         basicAmount: projectedResult.basic,
         hraAmount: projectedResult.hra,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
         taxRegime: "new",
+      }),
+    [projectedResult, salaryBreakdownService, submittedInputs]
+  );
+
+  const projectedWithoutTaxExemptResult = useMemo(
+    () =>
+      salaryBreakdownService({
+        annualCTC: submittedInputs.normalizedAnnualCTC,
+        grossMonthlySalary: projectedResult.grossMonthlySalary,
+        basicAmount: projectedResult.basic,
+        hraAmount: projectedResult.hra,
+        otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: 0,
+        taxRegime: submittedInputs.taxRegime,
+      }),
+    [projectedResult, salaryBreakdownService, submittedInputs]
+  );
+
+  const projectedWithTaxExemptResult = useMemo(
+    () =>
+      salaryBreakdownService({
+        annualCTC: submittedInputs.normalizedAnnualCTC,
+        grossMonthlySalary: projectedResult.grossMonthlySalary,
+        basicAmount: projectedResult.basic,
+        hraAmount: projectedResult.hra,
+        otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        taxRegime: submittedInputs.taxRegime,
       }),
     [projectedResult, salaryBreakdownService, submittedInputs]
   );
@@ -138,14 +175,20 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
   const computedData: SalaryPlannerComputedData = useMemo(() => {
     const netDifference = projectedResult.netInHand - result.netInHand;
     const inHandDifference = projectedNewRegimeResult.netInHand - projectedOldRegimeResult.netInHand;
+    const taxExemptSavingsMonthly =
+      projectedWithTaxExemptResult.netInHand - projectedWithoutTaxExemptResult.netInHand;
 
     return {
       result,
       projectedResult,
       projectedOldRegimeResult,
       projectedNewRegimeResult,
+      projectedWithoutTaxExemptResult,
+      projectedWithTaxExemptResult,
+      hasTaxExemptDeduction: submittedInputs.taxExemptDeductionMonthly > 0,
       netDifference,
       inHandDifference,
+      taxExemptSavingsMonthly,
       isNewRegimeBetter: inHandDifference > 0,
       isOldRegimeBetter: inHandDifference < 0,
       earningsRows: [
@@ -182,7 +225,15 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         { label: "Net In-Hand", before: result.netInHand, after: projectedResult.netInHand },
       ],
     };
-  }, [projectedNewRegimeResult, projectedOldRegimeResult, projectedResult, result, taxRegime]);
+  }, [
+    projectedNewRegimeResult,
+    projectedOldRegimeResult,
+    projectedResult,
+    projectedWithTaxExemptResult,
+    projectedWithoutTaxExemptResult,
+    result,
+    taxRegime,
+  ]);
 
   const setField = (field: keyof SalaryFormValues, value: string) => {
     setFormValues((current) => ({ ...current, [field]: value }));
@@ -201,6 +252,9 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       otherDeductions: current.otherDeductions
         ? String(Math.round(Math.max(0, parseAmount(current.otherDeductions) * factor)))
         : "",
+      taxExemptDeduction: current.taxExemptDeduction
+        ? String(Math.round(Math.max(0, parseAmount(current.taxExemptDeduction) * factor)))
+        : "",
     }));
   };
 
@@ -213,6 +267,10 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       basicValue: Math.max(0, basicMonthly),
       hraValue: Math.max(0, hraMonthly),
       otherDeductionsMonthly: Math.max(0, otherDeductionsMonthly),
+      taxExemptDeductionMonthly:
+        salaryPeriod === "yearly"
+          ? Math.max(0, taxExemptDeductionNumber / 12)
+          : Math.max(0, taxExemptDeductionNumber),
       taxRegime,
     });
 
