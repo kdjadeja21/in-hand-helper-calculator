@@ -100,7 +100,7 @@ export function TaxExemptDeductionComparisonCard({
         <div className="rounded-xl border border-zinc-200/80 bg-zinc-50 px-4 py-3 text-sm text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-300">
           {hasSavings
             ? <>
-                You save <span className="font-bold text-emerald-600 dark:text-emerald-300 decoration-emerald-300 dark:decoration-emerald-700 decoration-2">{formatINR(savingsYearly)}</span> yearly (<span className="font-bold text-emerald-600 dark:text-emerald-300  decoration-emerald-300 dark:decoration-emerald-700 decoration-2">{formatINR(savingsMonthly)}</span>/month) by using tax exempt deduction.
+                You save <span className="font-bold text-emerald-600 dark:text-emerald-300 decoration-emerald-300 dark:decoration-emerald-700 decoration-2">{formatINR(savingsYearly)}</span> yearly (<span className="text-emerald-600 dark:text-emerald-300  decoration-emerald-300 dark:decoration-emerald-700 decoration-2">{formatINR(savingsMonthly)}</span>/month) by using tax exempt deduction.
               </>
             : "No additional savings from tax exempt deduction based on current inputs."}
         </div>
