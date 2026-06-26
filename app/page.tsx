@@ -1,6 +1,7 @@
 "use client";
 
 import { useCountUp } from "@/features/salary-planner/hooks/useCountUp";
+import { JustInHandSection } from "@/features/salary-planner/components/JustInHandSection";
 import { KeyDifferencesCard } from "@/features/salary-planner/components/KeyDifferencesCard";
 import { NetInHandCard } from "@/features/salary-planner/components/NetInHandCard";
 import { PageHeader } from "@/features/salary-planner/components/PageHeader";
@@ -16,11 +17,13 @@ export default function Home() {
     projectionsSectionRef,
     salaryPeriod,
     taxRegime,
+    justInHandView,
     formValues,
     validationErrors,
     computedData,
     setField,
     setTaxRegime,
+    setJustInHandView,
     togglePeriod,
     calculate,
   } = useSalaryPlanner();
@@ -35,42 +38,59 @@ export default function Home() {
         <SalaryInputCard
           salaryPeriod={salaryPeriod}
           taxRegime={taxRegime}
+          justInHandView={justInHandView}
           formValues={formValues}
           validationErrors={validationErrors}
           onSubmit={calculate}
           onFieldChange={setField}
           onTaxRegimeChange={setTaxRegime}
           onPeriodChange={togglePeriod}
+          onJustInHandViewChange={setJustInHandView}
         />
         <section ref={projectionsSectionRef} className="grid gap-5">
-          <div className="grid gap-5 xl:grid-cols-2">
-            <NetInHandCard
-              projectedNetDisplay={projectedNetDisplay}
+          {justInHandView ? (
+            <JustInHandSection
               currentNetDisplay={currentNetDisplay}
-              netDifference={computedData.netDifference}
+              hasTaxExemptDeduction={computedData.hasTaxExemptDeduction}
+              result={computedData.result}
+              taxRegime={taxRegime}
+              currentOldRegimeResult={computedData.currentOldRegimeResult}
+              currentNewRegimeResult={computedData.currentNewRegimeResult}
+              isCurrentOldRegimeBetter={computedData.isCurrentOldRegimeBetter}
+              isCurrentNewRegimeBetter={computedData.isCurrentNewRegimeBetter}
             />
-            <TaxRegimeComparisonCard
-              oldResult={computedData.projectedOldRegimeResult}
-              newResult={computedData.projectedNewRegimeResult}
-              isOldRegimeBetter={computedData.isOldRegimeBetter}
-              isNewRegimeBetter={computedData.isNewRegimeBetter}
-            />
-          </div>
-          {computedData.hasTaxExemptDeduction ? (
-            <TaxExemptDeductionComparisonCard
-              withoutDeductionResult={computedData.projectedWithoutTaxExemptResult}
-              withDeductionResult={computedData.projectedWithTaxExemptResult}
-              savingsMonthly={computedData.taxExemptSavingsMonthly}
-            />
-          ) : null}
+          ) : (
+            <>
+              <div className="grid gap-5 xl:grid-cols-2">
+                <NetInHandCard
+                  projectedNetDisplay={projectedNetDisplay}
+                  currentNetDisplay={currentNetDisplay}
+                  netDifference={computedData.netDifference}
+                />
+                <TaxRegimeComparisonCard
+                  oldResult={computedData.projectedOldRegimeResult}
+                  newResult={computedData.projectedNewRegimeResult}
+                  isOldRegimeBetter={computedData.isOldRegimeBetter}
+                  isNewRegimeBetter={computedData.isNewRegimeBetter}
+                />
+              </div>
+              {computedData.hasTaxExemptDeduction ? (
+                <TaxExemptDeductionComparisonCard
+                  withoutDeductionResult={computedData.projectedWithoutTaxExemptResult}
+                  withDeductionResult={computedData.projectedWithTaxExemptResult}
+                  savingsMonthly={computedData.taxExemptSavingsMonthly}
+                />
+              ) : null}
+              <SalaryComparisonCard
+                result={computedData.result}
+                projectedResult={computedData.projectedResult}
+                earningsRows={computedData.earningsRows}
+                deductionRows={computedData.deductionRows}
+              />
+              <KeyDifferencesCard rows={computedData.atAGlanceRows} />
+            </>
+          )}
         </section>
-        <SalaryComparisonCard
-          result={computedData.result}
-          projectedResult={computedData.projectedResult}
-          earningsRows={computedData.earningsRows}
-          deductionRows={computedData.deductionRows}
-        />
-        <KeyDifferencesCard rows={computedData.atAGlanceRows} />
         <PrivacyFooter />
       </div>
     </main>

@@ -8,7 +8,11 @@ interface TaxRegimeComparisonCardProps {
   newResult: SalaryCalculatorResult;
   isOldRegimeBetter: boolean;
   isNewRegimeBetter: boolean;
+  description?: string;
 }
+
+const DEFAULT_DESCRIPTION =
+  "Compare monthly tax and in-hand salary for projected structure.";
 
 function RegimeTile({
   title,
@@ -61,6 +65,7 @@ export function TaxRegimeComparisonCard({
   newResult,
   isOldRegimeBetter,
   isNewRegimeBetter,
+  description = DEFAULT_DESCRIPTION,
 }: TaxRegimeComparisonCardProps) {
   return (
     <Card className={richCardClass}>
@@ -69,7 +74,7 @@ export function TaxRegimeComparisonCard({
           Old vs New Tax Regime
         </CardTitle>
         <CardDescription className="text-sm text-zinc-500 dark:text-zinc-400">
-          Compare monthly tax and in-hand salary for projected structure.
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 p-5">

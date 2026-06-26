@@ -44,6 +44,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
   const [taxRegime, setTaxRegime] = useState<TaxRegime>("new");
   const [formValues, setFormValues] = useState<SalaryFormValues>(initialFormValues);
   const [submittedInputs, setSubmittedInputs] = useState<SubmittedInputs>(initialSubmittedInputs);
+  const [justInHandView, setJustInHandView] = useState(false);
 
   const annualCTCNumber = parseAmount(formValues.annualCTC);
   const grossSalaryNumber = parseAmount(formValues.grossSalary);
@@ -172,9 +173,39 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
     [projectedResult, salaryBreakdownService, submittedInputs]
   );
 
+  const currentOldRegimeResult = useMemo(
+    () =>
+      salaryBreakdownService({
+        annualCTC: submittedInputs.normalizedAnnualCTC,
+        grossMonthlySalary: submittedInputs.normalizedGrossMonthly,
+        basicAmount: submittedInputs.basicValue,
+        hraAmount: submittedInputs.hraValue,
+        otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        taxRegime: "old",
+      }),
+    [salaryBreakdownService, submittedInputs]
+  );
+
+  const currentNewRegimeResult = useMemo(
+    () =>
+      salaryBreakdownService({
+        annualCTC: submittedInputs.normalizedAnnualCTC,
+        grossMonthlySalary: submittedInputs.normalizedGrossMonthly,
+        basicAmount: submittedInputs.basicValue,
+        hraAmount: submittedInputs.hraValue,
+        otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
+        taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        taxRegime: "new",
+      }),
+    [salaryBreakdownService, submittedInputs]
+  );
+
   const computedData: SalaryPlannerComputedData = useMemo(() => {
     const netDifference = projectedResult.netInHand - result.netInHand;
     const inHandDifference = projectedNewRegimeResult.netInHand - projectedOldRegimeResult.netInHand;
+    const currentInHandDifference =
+      currentNewRegimeResult.netInHand - currentOldRegimeResult.netInHand;
     const taxExemptSavingsMonthly =
       projectedWithTaxExemptResult.netInHand - projectedWithoutTaxExemptResult.netInHand;
 
@@ -185,6 +216,10 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       projectedNewRegimeResult,
       projectedWithoutTaxExemptResult,
       projectedWithTaxExemptResult,
+      currentOldRegimeResult,
+      currentNewRegimeResult,
+      isCurrentNewRegimeBetter: currentInHandDifference > 0,
+      isCurrentOldRegimeBetter: currentInHandDifference < 0,
       hasTaxExemptDeduction: submittedInputs.taxExemptDeductionMonthly > 0,
       netDifference,
       inHandDifference,
@@ -226,12 +261,15 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       ],
     };
   }, [
+    currentNewRegimeResult,
+    currentOldRegimeResult,
     projectedNewRegimeResult,
     projectedOldRegimeResult,
     projectedResult,
     projectedWithTaxExemptResult,
     projectedWithoutTaxExemptResult,
     result,
+    submittedInputs.taxExemptDeductionMonthly,
     taxRegime,
   ]);
 
@@ -283,11 +321,13 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
     projectionsSectionRef,
     salaryPeriod,
     taxRegime,
+    justInHandView,
     formValues,
     validationErrors,
     computedData,
     setField,
     setTaxRegime,
+    setJustInHandView,
     togglePeriod,
     calculate,
   };

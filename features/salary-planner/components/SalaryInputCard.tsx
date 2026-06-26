@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SegmentControl } from "@/components/ui/segment-control";
+import { Switch } from "@/components/ui/switch";
 import { extractDigits, formatInputINR } from "@/features/salary-planner/utils/currency";
 import { richCardClass } from "@/features/salary-planner/components/plannerStyles";
 import type { SalaryFormValues, SalaryPeriod } from "@/features/salary-planner/types";
@@ -11,11 +12,13 @@ import type { SalaryFormValues, SalaryPeriod } from "@/features/salary-planner/t
 interface SalaryInputCardProps {
   salaryPeriod: SalaryPeriod;
   taxRegime: TaxRegime;
+  justInHandView: boolean;
   formValues: SalaryFormValues;
   validationErrors: string[];
   onSubmit: () => void;
   onTaxRegimeChange: (regime: TaxRegime) => void;
   onPeriodChange: (period: SalaryPeriod) => void;
+  onJustInHandViewChange: (value: boolean) => void;
   onFieldChange: (field: keyof SalaryFormValues, value: string) => void;
 }
 
@@ -54,11 +57,13 @@ function MoneyInput({
 export function SalaryInputCard({
   salaryPeriod,
   taxRegime,
+  justInHandView,
   formValues,
   validationErrors,
   onSubmit,
   onTaxRegimeChange,
   onPeriodChange,
+  onJustInHandViewChange,
   onFieldChange,
 }: SalaryInputCardProps) {
   return (
@@ -97,6 +102,16 @@ export function SalaryInputCard({
                   { value: "new", label: "New" },
                 ]}
                 className="w-auto"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                Just In-Hand:
+              </span>
+              <Switch
+                aria-label="Toggle just in-hand view"
+                checked={justInHandView}
+                onCheckedChange={onJustInHandViewChange}
               />
             </div>
           </div>

@@ -34,6 +34,10 @@ export interface SalaryPlannerComputedData {
   projectedNewRegimeResult: SalaryCalculatorResult;
   projectedWithoutTaxExemptResult: SalaryCalculatorResult;
   projectedWithTaxExemptResult: SalaryCalculatorResult;
+  currentOldRegimeResult: SalaryCalculatorResult;
+  currentNewRegimeResult: SalaryCalculatorResult;
+  isCurrentNewRegimeBetter: boolean;
+  isCurrentOldRegimeBetter: boolean;
   hasTaxExemptDeduction: boolean;
   netDifference: number;
   inHandDifference: number;

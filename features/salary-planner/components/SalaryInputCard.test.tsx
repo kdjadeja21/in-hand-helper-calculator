@@ -12,6 +12,7 @@ describe("SalaryInputCard", () => {
       <SalaryInputCard
         salaryPeriod="monthly"
         taxRegime="new"
+        justInHandView={false}
         validationErrors={[]}
         formValues={{
           annualCTC: "100000",
@@ -25,10 +26,11 @@ describe("SalaryInputCard", () => {
         onFieldChange={onFieldChange}
         onTaxRegimeChange={onTaxRegimeChange}
         onPeriodChange={onPeriodChange}
+        onJustInHandViewChange={vi.fn()}
       />
     );
 
-    fireEvent.change(screen.getByLabelText("Gross Salary (Monthly ₹)"), {
+    fireEvent.change(screen.getByLabelText("Gross Salary"), {
       target: { value: "12,34x" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Calculate" }));
