@@ -170,9 +170,9 @@ export function SalaryInputCard({
             {/* Optional Fields */}
             <div className="border-t border-zinc-200/50 dark:border-zinc-800 pt-6">
               <p className="mb-4 text-xs font-semibold tracking-[0.12em] text-zinc-500 uppercase dark:text-zinc-400">
-                Deductions
+                Deductions & Tax Exemptions
               </p>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
                 <div>
                   <MoneyInput
                     label="Other Deductions"
