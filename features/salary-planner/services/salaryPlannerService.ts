@@ -7,6 +7,7 @@ export interface SalaryBreakdownRequest {
   hraAmount: number;
   otherDeductionsMonthly: number;
   taxExemptDeductionMonthly?: number;
+  foodCouponsMonthly?: number;
   taxRegime: TaxRegime;
 }
 

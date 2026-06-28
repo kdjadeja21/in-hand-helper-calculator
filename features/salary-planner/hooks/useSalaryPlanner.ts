@@ -21,6 +21,7 @@ const initialFormValues: SalaryFormValues = {
   hraValue: "20000",
   otherDeductions: "",
   taxExemptDeduction: "",
+  foodCoupons: "",
 };
 
 const initialSubmittedInputs: SubmittedInputs = {
@@ -30,6 +31,7 @@ const initialSubmittedInputs: SubmittedInputs = {
   hraValue: 20000,
   otherDeductionsMonthly: 0,
   taxExemptDeductionMonthly: 0,
+  foodCouponsMonthly: 0,
   taxRegime: "new",
 };
 
@@ -52,6 +54,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
   const hraValueNumber = parseAmount(formValues.hraValue);
   const otherDeductionsNumber = parseAmount(formValues.otherDeductions);
   const taxExemptDeductionNumber = parseAmount(formValues.taxExemptDeduction);
+  const foodCouponsNumber = parseAmount(formValues.foodCoupons);
 
   const normalizedAnnualCTC =
     salaryPeriod === "yearly" ? annualCTCNumber : annualCTCNumber * 12;
@@ -71,6 +74,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
     if (hraValueNumber < 0) errors.push("HRA cannot be negative.");
     if (otherDeductionsNumber < 0) errors.push("Other deductions cannot be negative.");
     if (taxExemptDeductionNumber < 0) errors.push("Tax exempt deduction cannot be negative.");
+    if (foodCouponsNumber < 0) errors.push("Food coupons cannot be negative.");
     if (basicMonthly + hraMonthly > normalizedGrossMonthly) {
       errors.push("Basic + HRA is greater than gross monthly salary.");
     }
@@ -79,6 +83,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
   }, [
     basicMonthly,
     basicValueNumber,
+    foodCouponsNumber,
     hraMonthly,
     hraValueNumber,
     normalizedAnnualCTC,
@@ -96,6 +101,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: submittedInputs.hraValue,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
         taxRegime: submittedInputs.taxRegime,
       }),
     [salaryBreakdownService, submittedInputs]
@@ -113,6 +119,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       hraAmount: projectedHra,
       otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
       taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+      foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
       taxRegime: submittedInputs.taxRegime,
     });
   }, [result, salaryBreakdownService, submittedInputs]);
@@ -126,6 +133,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: projectedResult.hra,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
         taxRegime: "old",
       }),
     [projectedResult, salaryBreakdownService, submittedInputs]
@@ -140,6 +148,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: projectedResult.hra,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
         taxRegime: "new",
       }),
     [projectedResult, salaryBreakdownService, submittedInputs]
@@ -154,6 +163,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: projectedResult.hra,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: 0,
+        foodCouponsMonthly: 0,
         taxRegime: submittedInputs.taxRegime,
       }),
     [projectedResult, salaryBreakdownService, submittedInputs]
@@ -168,6 +178,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: projectedResult.hra,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
         taxRegime: submittedInputs.taxRegime,
       }),
     [projectedResult, salaryBreakdownService, submittedInputs]
@@ -182,6 +193,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: submittedInputs.hraValue,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
         taxRegime: "old",
       }),
     [salaryBreakdownService, submittedInputs]
@@ -196,6 +208,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         hraAmount: submittedInputs.hraValue,
         otherDeductionsMonthly: submittedInputs.otherDeductionsMonthly,
         taxExemptDeductionMonthly: submittedInputs.taxExemptDeductionMonthly,
+        foodCouponsMonthly: submittedInputs.foodCouponsMonthly,
         taxRegime: "new",
       }),
     [salaryBreakdownService, submittedInputs]
@@ -220,7 +233,7 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       currentNewRegimeResult,
       isCurrentNewRegimeBetter: currentInHandDifference > 0,
       isCurrentOldRegimeBetter: currentInHandDifference < 0,
-      hasTaxExemptDeduction: submittedInputs.taxExemptDeductionMonthly > 0,
+      hasTaxExemptDeduction: submittedInputs.taxExemptDeductionMonthly > 0 || submittedInputs.foodCouponsMonthly > 0,
       netDifference,
       inHandDifference,
       taxExemptSavingsMonthly,
@@ -293,6 +306,9 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
       taxExemptDeduction: current.taxExemptDeduction
         ? String(Math.round(Math.max(0, parseAmount(current.taxExemptDeduction) * factor)))
         : "",
+      foodCoupons: current.foodCoupons
+        ? String(Math.round(Math.max(0, parseAmount(current.foodCoupons) * factor)))
+        : "",
     }));
   };
 
@@ -309,6 +325,10 @@ export function useSalaryPlanner(options?: UseSalaryPlannerOptions) {
         salaryPeriod === "yearly"
           ? Math.max(0, taxExemptDeductionNumber / 12)
           : Math.max(0, taxExemptDeductionNumber),
+      foodCouponsMonthly:
+        salaryPeriod === "yearly"
+          ? Math.max(0, foodCouponsNumber / 12)
+          : Math.max(0, foodCouponsNumber),
       taxRegime,
     });
 

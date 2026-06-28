@@ -21,6 +21,7 @@ describe("SalaryInputCard", () => {
           hraValue: "20000",
           otherDeductions: "",
           taxExemptDeduction: "",
+          foodCoupons: "",
         }}
         onSubmit={onSubmit}
         onFieldChange={onFieldChange}

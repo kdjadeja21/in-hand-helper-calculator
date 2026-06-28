@@ -104,16 +104,54 @@ export function CurrentSalaryBreakdownCard({ result, taxRegime }: CurrentSalaryB
           </p>
         </div>
 
-        <div className="rounded-2xl bg-emerald-100/85 px-4 py-4 dark:bg-emerald-900/35">
-          <div className="grid grid-cols-[1.5fr_1fr] items-center gap-3">
-            <p className="text-xs font-semibold tracking-[0.12em] text-emerald-700 uppercase dark:text-emerald-300">
-              Net In-Hand
-            </p>
-            <p className="text-right text-2xl font-semibold tabular-nums text-emerald-700 dark:text-emerald-300">
-              {formatINR(result.netInHand)}
-            </p>
+        {result.foodCoupons > 0 ? (
+          <div className="rounded-2xl border border-emerald-100 bg-white dark:border-emerald-900/50 dark:bg-zinc-900/50 overflow-hidden shadow-sm">
+            <div className="px-4 py-3 border-b border-emerald-50 dark:border-emerald-900/30">
+              <div className="grid grid-cols-[1.5fr_1fr] items-center gap-3">
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Total Net In-Hand
+                </p>
+                <p className="text-right font-semibold tabular-nums text-zinc-700 dark:text-zinc-300">
+                  {formatINR(result.netInHand)}
+                </p>
+              </div>
+            </div>
+            <div className="px-4 py-3">
+              <div className="grid grid-cols-[1.5fr_1fr] items-center gap-3">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  Food Coupons <span className="text-[10px] ml-1 opacity-70">(Separate Card)</span>
+                </p>
+                <p className="text-right tabular-nums text-zinc-500 dark:text-zinc-400">
+                  - {formatINR(result.foodCoupons)}
+                </p>
+              </div>
+            </div>
+            <div className="bg-emerald-100/85 px-4 py-4 dark:bg-emerald-900/35">
+              <div className="grid grid-cols-[1.5fr_1fr] items-center gap-3">
+                <div>
+                  <p className="text-xs font-semibold tracking-[0.12em] text-emerald-700 uppercase dark:text-emerald-300">
+                    Net Pay
+                  </p>
+                  <p className="text-[10px] font-medium text-emerald-600/80 dark:text-emerald-400/80 mt-0.5 uppercase tracking-wider">Bank Credit</p>
+                </div>
+                <p className="text-right text-2xl font-semibold tabular-nums text-emerald-700 dark:text-emerald-300">
+                  {formatINR(result.netPay)}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="rounded-2xl bg-emerald-100/85 px-4 py-4 dark:bg-emerald-900/35">
+            <div className="grid grid-cols-[1.5fr_1fr] items-center gap-3">
+              <p className="text-xs font-semibold tracking-[0.12em] text-emerald-700 uppercase dark:text-emerald-300">
+                Net In-Hand
+              </p>
+              <p className="text-right text-2xl font-semibold tabular-nums text-emerald-700 dark:text-emerald-300">
+                {formatINR(result.netInHand)}
+              </p>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

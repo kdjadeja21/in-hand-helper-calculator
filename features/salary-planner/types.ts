@@ -9,6 +9,7 @@ export interface SalaryFormValues {
   hraValue: string;
   otherDeductions: string;
   taxExemptDeduction: string;
+  foodCoupons: string;
 }
 
 export interface SubmittedInputs {
@@ -18,6 +19,7 @@ export interface SubmittedInputs {
   hraValue: number;
   otherDeductionsMonthly: number;
   taxExemptDeductionMonthly: number;
+  foodCouponsMonthly: number;
   taxRegime: TaxRegime;
 }
 

@@ -187,7 +187,15 @@ export function SalaryInputCard({
                     value={formValues.taxExemptDeduction}
                     onChange={(value) => onFieldChange("taxExemptDeduction", value)}
                   />
-                  <p className="text-xs text-zinc-400 dark:text-zinc-500 px-1 mt-2">e.g., Food Coupons, Fuel, Driver Salary</p>
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500 px-1 mt-2">e.g., Fuel, Driver Salary</p>
+                </div>
+                <div>
+                  <MoneyInput
+                    label="Food Coupons"
+                    value={formValues.foodCoupons}
+                    onChange={(value) => onFieldChange("foodCoupons", value)}
+                  />
+                  <p className="text-xs text-zinc-400 dark:text-zinc-500 px-1 mt-2">Received on a separate card</p>
                 </div>
               </div>
             </div>

@@ -7,6 +7,7 @@ export interface SalaryCalculatorInput {
   hraAmount: number;
   otherDeductionsMonthly: number;
   taxExemptDeductionMonthly?: number;
+  foodCouponsMonthly?: number;
   taxRegime: TaxRegime;
 }
 
@@ -21,6 +22,8 @@ export interface SalaryCalculatorResult {
   otherDeductions: number;
   totalDeductions: number;
   netInHand: number;
+  foodCoupons: number;
+  netPay: number;
 }
 
 const PROFESSIONAL_TAX_MONTHLY = 200;
@@ -82,6 +85,7 @@ export function calculateSalaryBreakdown(
   const hra = Math.max(0, input.hraAmount);
   const otherDeductions = Math.max(0, input.otherDeductionsMonthly);
   const taxExemptDeductionMonthly = Math.max(0, input.taxExemptDeductionMonthly ?? 0);
+  const foodCouponsMonthly = Math.max(0, input.foodCouponsMonthly ?? 0);
 
   const specialAllowance = Math.max(0, grossMonthlySalary - (basic + hra));
   const pf = basic * 0.12;
@@ -89,7 +93,7 @@ export function calculateSalaryBreakdown(
 
   const annualGross = grossMonthlySalary * 12;
   const annualPF = pf * 12;
-  const annualTaxExemptDeduction = taxExemptDeductionMonthly * 12;
+  const annualTaxExemptDeduction = (taxExemptDeductionMonthly + foodCouponsMonthly) * 12;
   const taxableIncome =
     input.taxRegime === "old"
       ? Math.max(
@@ -119,5 +123,7 @@ export function calculateSalaryBreakdown(
     otherDeductions: roundAmount(otherDeductions),
     totalDeductions: roundAmount(totalDeductions),
     netInHand: roundAmount(netInHand),
+    foodCoupons: roundAmount(foodCouponsMonthly),
+    netPay: roundAmount(netInHand - foodCouponsMonthly),
   };
 }
